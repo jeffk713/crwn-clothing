@@ -22,11 +22,8 @@ class ShopPage extends React.Component {
           ))
         }
       </div>
-
     );
-
   }
-  
 }
 
 export default ShopPage;
