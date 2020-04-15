@@ -19,4 +19,4 @@ const MenuItem = ({ title, imageUrl, size, history, linkUrl, match }) => (
   </div>
 );
 
-export default withRouter(MenuItem); // with 'withRouter', MenuItem has access to those 3; location, match and history
+export default withRouter(MenuItem); // with 'withRouter', MenuItem has access to those 3; location, match and history Lec 68. at 3:40
