@@ -6,7 +6,7 @@ import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
 import SignInAndSignUp from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
 import Header from './components/header/header.component';
-import { auth } from './firebase/firebase.utils';
+import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 
 // firevase auth needs to store user information in state, 'App' component have been converted to class component.
 class App extends React.Component {
@@ -21,15 +21,31 @@ class App extends React.Component {
   unsubscribeFromAuth = null // new method for closing subscription
 
   componentDidMount() {
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(user => { 
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => { 
       // this is an open subscription
       //whenever any changes occur on firebase related to this application, firebase sends massage that auth state changed whether user state updated; signing in/out etc. Then it will give us user info, so we dont have to manually fetch everytime.
       // because it is an open subscription, we have to close subscription when application unmounted for no memory leak
       //Lec 84
-      this.setState({ currentUser: user });
+      if (userAuth) { //if user signs in, state gets changed
+        const userRef = await createUserProfileDocument(userAuth)
 
-      console.log(user); //
-    })
+        userRef.onSnapshot(snapShot => {  
+          this.setState({ 
+            currentUser: {
+              id: snapShot.id,
+              ...snapShot.data() //.data() to be performed for actual data.
+            }
+          }/*, ()=> {
+            console.log(this.state); // ***setState is async. this needs to be called as a second function.
+          }*/);
+
+          console.log(this.state);
+        });
+      } else {
+        this.setState({currentUser: userAuth}); //meaning, if user signs out(userAuth = null), set 'currentUser' to 'null'
+      }
+
+    });
   }
 
   componentWillUnmount() {
