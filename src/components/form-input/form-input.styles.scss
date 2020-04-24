@@ -29,7 +29,7 @@ $main-color: black; //sass variable
     }
 
     &:focus ~ .form-input-label { 
-      // when focusing, 'shrinkLable' to be appliked to .form-input-label
+      // when focusing, 'shrinkLable' to be applied to .form-input-label
       @include shrinkLabel();
     }
   }

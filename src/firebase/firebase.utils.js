@@ -31,7 +31,7 @@ export const createUserProfileDocument = async (userAuth, additionalData) => { /
     const createdAt = new Date();
 
     try {
-      await userRef.set({ //create the data from userAuth
+      await userRef.set({ //create the data from userAuth, store data in firestore
         displayName,
         email,
         createdAt,
@@ -49,15 +49,15 @@ firebase.initializeApp(myOwnConfig);
 
 export const auth = firebase.auth();
 
-
 export const firestore = firebase.firestore();
 
 const provider = new firebase.auth.GoogleAuthProvider();
 // this gives access to 'GoogleAuthProvider' from 'auth' library
 provider.setCustomParameters({ prompt: 'select_account' });
 //we wanna trigger google pop-up when we use the google provider
-export const signInWithGoogle = () => auth.signInWithPopup(provider);
-// 'signInWithPopup' takes many types of pop-ups, this selects only google one
+export const signInWithGoogle = () => auth.signInWithPopup(provider); 
+// 'signInWithPopup' takes many types of pop-ups, this selects only google one. this function creates pop-up when google-logging in.
+//after this, go to firebase console and enable google option under authentication/sign-in method
 
 export default firebase; 
 

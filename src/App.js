@@ -1,50 +1,45 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import './App.css';
+import { connect } from 'react-redux';
 
 import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
 import SignInAndSignUp from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
 import Header from './components/header/header.component';
 import { auth, createUserProfileDocument } from './firebase/firebase.utils';
+import { setCurrentUser } from './redux/user/user.action';
+
+import './App.css';
 
 // firevase auth needs to store user information in state, 'App' component have been converted to class component.
 class App extends React.Component {
-  constructor() {
-    super()
-
-    this.state= {
-      currentUser: null
-    }
-  }
   
-  unsubscribeFromAuth = null // new method for closing subscription
+  unsubscribeFromAuth = null // new method for closing subscription, default is null
 
   componentDidMount() {
+
+    const { setCurrentUser } = this.props; //this.props is 'mapDispatchToProps'
+
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => { 
       // this is an open subscription
       //whenever any changes occur on firebase related to this application, firebase sends massage that auth state changed whether user state updated; signing in/out etc. Then it will give us user info, so we dont have to manually fetch everytime.
       // because it is an open subscription, we have to close subscription when application unmounted for no memory leak
-      //Lec 84
+      //Lec 85
       if (userAuth) { //if user signs in, state gets changed
         const userRef = await createUserProfileDocument(userAuth)
 
         userRef.onSnapshot(snapShot => {  
-          this.setState({ 
-            currentUser: {
+          setCurrentUser({
               id: snapShot.id,
               ...snapShot.data() //.data() to be performed for actual data.
-            }
-          }/*, ()=> {
-            console.log(this.state); // ***setState is async. this needs to be called as a second function.
-          }*/);
+            })
+          });
 
-          console.log(this.state);
-        });
       } else {
-        this.setState({currentUser: userAuth}); //meaning, if user signs out(userAuth = null), set 'currentUser' to 'null'
+        setCurrentUser(userAuth); 
+        //meaning, if user signs out(userAuth = null), set 'currentUser' to 'null'
       }
-
+ 
     });
   }
 
@@ -58,7 +53,7 @@ class App extends React.Component {
 
     return (
       <div>
-        <Header currentUser={this.state.currentUser} /> {/* Header has sign in and out button, so it needs state of currentUser to show sign in or out button aocordingly */}
+        <Header /> {/* Header has sign in and out button, so it needs state of currentUser to show sign in or out button aocordingly */}
         <Switch>
           <Route exact path='/' component={HomePage} />
           <Route path='/shop' component={ShopPage} />
@@ -75,4 +70,12 @@ class App extends React.Component {
   //<Switch> gives us more control over renderingn page, it only renders only one component when it matches. no rendering multiple components. Lec 66. at 6:00
 }
 
-export default App;
+const mapDispatchToProps = dispatch => ({
+  setCurrentUser: user => dispatch(setCurrentUser(user)) 
+  // same as this; setCurrentUser(user) = 'dispatch(setCurrentUser(user))'
+  // 'setCurrentUser(user)' is to set currentUser to user
+})
+
+export default connect(null, mapDispatchToProps)(App);
+// passing 'null' as the first argument, 
+// after passing null, passing 'mapDispatchToProps' into 'App' as props.

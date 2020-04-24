@@ -20,12 +20,9 @@ handleSubmit = async event => {
   event.preventDefault();
 
   const { email, password } = this.state;
-
-  this.setState({ email: '', password: ''})
   
   try {
     await auth.signInWithEmailAndPassword(email, password);
-
     this.setState({ email:'', password:'' });
   } catch (error) {
     console.log(error);

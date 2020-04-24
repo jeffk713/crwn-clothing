@@ -1,0 +1,2 @@
+
+npm add redux redux-logger react-redux // for redux
