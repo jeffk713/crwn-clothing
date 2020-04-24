@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import HomePage from './pages/homepage/homepage.component';
@@ -10,6 +10,7 @@ import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 import { setCurrentUser } from './redux/user/user.action';
 
 import './App.css';
+import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
 
 // firevase auth needs to store user information in state, 'App' component have been converted to class component.
 class App extends React.Component {
@@ -57,7 +58,7 @@ class App extends React.Component {
         <Switch>
           <Route exact path='/' component={HomePage} />
           <Route path='/shop' component={ShopPage} />
-          <Route path='/signin' component={SignInAndSignUp} />
+          <Route exact path='/signin' render={()=> this.props.currentUser? (<Redirect to='/'/>): (<SignInAndSignUpPage/>)} />
         </Switch>
       </div>
     ); 
@@ -70,12 +71,16 @@ class App extends React.Component {
   //<Switch> gives us more control over renderingn page, it only renders only one component when it matches. no rendering multiple components. Lec 66. at 6:00
 }
 
+const mapStateToProps = ({user})=> ({ // destructuring 'state' into '{user}'
+  currentUser: user.currentUser
+});
+
 const mapDispatchToProps = dispatch => ({
   setCurrentUser: user => dispatch(setCurrentUser(user)) 
-  // same as this; setCurrentUser(user) = 'dispatch(setCurrentUser(user))'
-  // 'setCurrentUser(user)' is to set currentUser to user
-})
+  // dispatch funciton tells redux to dispatch the object passed to all the reducers as action object.
+  // 'setCurrentUser(user)' returns an object
 
-export default connect(null, mapDispatchToProps)(App);
-// passing 'null' as the first argument, 
-// after passing null, passing 'mapDispatchToProps' into 'App' as props.
+  // same as this; setCurrentUser(user) = 'dispatch(setCurrentUser(user))'
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
