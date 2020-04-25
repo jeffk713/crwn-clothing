@@ -5,3 +5,8 @@ export const toggleCartHidden = ()=> ({
 });
 
 // payload is optional. in the reducer we already toggle the hidden value.
+
+export const addItem = item=> ({
+  type: CartActionTypes.ADD_ITEM, 
+  payload: item
+});
