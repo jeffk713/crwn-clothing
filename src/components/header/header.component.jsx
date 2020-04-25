@@ -3,12 +3,14 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux'; // 'connect' is a higher order component like withRouter from 'react-router-dom'
 
 import { auth } from '../../firebase/firebase.utils';
+import CartIcon from '../cart-icon/cart-icon.component';
+import CartDropdown from '../cart-dropdown/cart-dropdown.component';
 
 import { ReactComponent as Logo } from '../../assets/crown.svg';
 
 import './header.styles.scss';
 
-const Header=({ currentUser })=> (
+const Header=({ currentUser, hidden })=> (
   <div className='header'>
     <Link className='logo-container' to='/'>
       <Logo className='logo'/>
@@ -31,18 +33,24 @@ const Header=({ currentUser })=> (
           </Link>
         )
       }
+      <CartIcon />
     </div>
-  
+    {
+      hidden? null: <CartDropdown />
+    }
   </div>
 )
 
-const mapStateToProps = state => ({ //state object is argument, state is 'rootReducer'
+const mapStateToProps = ({ user: { currentUser }, cart: { hidden } }) => ({ //state object is argument, state is 'rootReducer'
 // name can be anything but 'mapStateToProps' is standard with redux codebases
 
-currentUser: state.user.currentUser 
+// currentUser: state.user.currentUser // with destructuring, this is not needed anymore
 //name of property, 'currentUser', will be actual property to pass in component.
 //Head component takes 'currentUser' props. so the name of property is 'currenUser'
 //value is from 'rootReducer'
+
+currentUser,
+hidden
 });
 
 export default connect(mapStateToProps)(Header); 
