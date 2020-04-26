@@ -1,2 +1,4 @@
 
 npm add redux redux-logger react-redux // for redux
+
+npm add reselect // for reselect
