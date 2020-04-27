@@ -14,7 +14,17 @@ export const selectCartItems = createSelector( //createSelector is a memoized se
   cart => cart.cartItems //returns cartItems array off of cart object
 );
 
+export const selectCartHidden = createSelector(
+  [selectCart],
+  cart => cart.hidden
+)
+
 export const selectCartItemsCount = createSelector(
   [selectCartItems], //returns an array of cartItems
   cartItems => cartItems.reduce((accumalatedQuantity, cartItem)=> accumalatedQuantity+cartItem.quantity,0)
+)
+
+export const selectCartTotal = createSelector(
+  [selectCartItems],
+  cartItems => cartItems.reduce((accumalatedQuantity, cartItem)=> accumalatedQuantity+cartItem.quantity*cartItem.price,0)
 )

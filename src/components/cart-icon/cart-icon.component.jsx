@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 
 import { toggleCartHidden } from '../../redux/cart/cart.actions';
 import { selectCartItemsCount } from '../../redux/cart/cart.selectors'
@@ -15,13 +16,13 @@ const CartIcon = ({ toggleCartHidden, itemCount }) => (
   </div>
 )
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = createStructuredSelector ({
   //itemCount: cartItems.reduce((accumalatedQuantity, cartItem)=> accumalatedQuantity+cartItem.quantity,0)
   //mapStateToProps is called everytime there is an update on rootReducer, which affects performance.
   // this is called selector and to avoid this redendancy we use reselect 
   //lec 117
 
-  itemCount: selectCartItemsCount(state) // this way, itemCount is not called everytime there is an update on rootReducer
+  itemCount: selectCartItemsCount // this way, itemCount is not called everytime there is an update on rootReducer
 })
 
 const mapDispatchToProps= dispatch => ({
