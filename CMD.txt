@@ -4,3 +4,5 @@ npm add redux redux-logger react-redux // for redux
 npm add reselect // for reselect
 
 npm add redux-persist // for redux-persist
+
+npm add react-stripe-checkout // for stripe
