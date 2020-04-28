@@ -1,8 +1,18 @@
 
-npm add redux redux-logger react-redux // for redux
+// for redux
+npm add redux redux-logger react-redux 
 
-npm add reselect // for reselect
+// for reselect
+npm add reselect 
 
-npm add redux-persist // for redux-persist
+// for redux-persist
+npm add redux-persist 
 
-npm add react-stripe-checkout // for stripe
+// for stripe
+npm add react-stripe-checkout 
+
+//for heroku
+npm install -g heroku
+heroku login
+heroku create crwn--web--udemy --buildpack https://github.com/mars/create-react-app-buildpack.git
+git push heroku master
