@@ -10,10 +10,11 @@ import CheckoutPage from './pages/checkout/checkout.component';
 
 import Header from './components/header/header.component';
 
-import { auth, createUserProfileDocument } from './firebase/firebase.utils';
+import { auth, createUserProfileDocument, addCollectionAndDocuments } from './firebase/firebase.utils';
 
 import { setCurrentUser } from './redux/user/user.action';
 import { selectCurrentUser } from './redux/user/user.selectors';
+import { selectCollectionsForPreview } from './redux/shop/shop.selectors';
 
 import './App.css';
 
@@ -37,13 +38,16 @@ class App extends React.Component {
         userRef.onSnapshot(snapShot => {  
           setCurrentUser({
               id: snapShot.id,
-              ...snapShot.data() //.data() to be performed for actual data.
+              ...snapShot.data() //.data() to be performed for actual data from document snapshot.
             })
           });
 
       } else {
         setCurrentUser(userAuth); 
         //meaning, if user signs out(userAuth = null), set 'currentUser' to 'null'
+
+        // addCollectionAndDocuments('collections', collectionsArray.map(({title, items}) => ({title, items}) ));
+        // after updating data, no need.
       }
  
     });
@@ -78,7 +82,8 @@ class App extends React.Component {
 }
 
 const mapStateToProps = createStructuredSelector({ // destructuring 'state' into '{user}'
-  currentUser: selectCurrentUser
+  currentUser: selectCurrentUser,
+  // collectionsArray: selectCollectionsForPreview // after updating data, no need.
 });
 
 const mapDispatchToProps = dispatch => ({

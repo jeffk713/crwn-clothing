@@ -22,9 +22,16 @@ export const createUserProfileDocument = async (userAuth, additionalData) => { /
   //userRef is queryReference Document version from ".doc(`users/${userAuth.uid}`)"
   //'only document reference' object is used with "CRUD" method (creat= .set(), retrieve= .get(), update= .update(), delete= .delete())
   //queryReference does not have actual data, but have details like 'path' 'id' etc
+  const collectionRef = firestore.collection('users');
+  // to get query reference or collection reference object
+
 
   const snapShot = await userRef.get(); // async 
   //snapShot object is from perfoming .get() method. this snapShot is document snapShot since .get() is performed with documentRef.
+  
+  const collectionSnapshot = await collectionRef.get()
+  //collection snapshot contains document snapshot 
+  console.log({ collection: collectionSnapshot.docs.map(doc => doc.data()) });
 
   if (!snapShot.exists) { //meaning if it does not exist, we wanna store it in database
     const { displayName, email } = userAuth;
@@ -43,6 +50,38 @@ export const createUserProfileDocument = async (userAuth, additionalData) => { /
   }
 
   return userRef; // in case we need it later.
+}
+
+export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
+  const collectionRef = firestore.collection(collectionKey);
+  //firebase gives a reference no matter what even tho the data deos not exist.
+  console.log(objectsToAdd);
+
+  const batch = firestore.batch(); // updating data as a group so if update gets interrupted, it does not happen only some of data is stored.
+  objectsToAdd.forEach(obj => {
+    const newDocRef = collectionRef.doc(); // create document with a unique random id 
+    batch.set(newDocRef, obj);
+  });
+
+  return await batch.commit();
+  //it returns a promise, when commit succeeds it resolves a void value, null.
+  //since it is async, we can chain off this function and call ".then" function for further action.
+};
+
+export const convertCollectionsSnapshotToMap = (collections) => {
+  const transformedCollection = collections.docs.map(doc => { //collecitons.docs is array-formed
+    const { title, items } = doc.data();
+    return {
+      routeName: encodeURI(title.toLowerCase()),
+      id: doc.id,
+      title,
+      items
+    }
+  })
+  return transformedCollection.reduce((accumulator, collection) => {
+    accumulator[collection.title.toLowerCase()] = collection;
+    return accumulator;
+  }, {})
 }
 
 firebase.initializeApp(myOwnConfig);
