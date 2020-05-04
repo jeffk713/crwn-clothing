@@ -10,7 +10,7 @@ import shopReducer from './shop/shop.reducer';
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['cart'] //an array that contains any string names of any reducer we want to store
+  whitelist: ['cart'] //an array that contains any string names of any reducer we want to store 
 }
 
 const rootReducer = combineReducers({

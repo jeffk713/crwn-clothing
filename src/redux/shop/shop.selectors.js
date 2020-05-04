@@ -27,3 +27,14 @@ export const selectCollection = collectionUrlParam =>
     // if data is stored in object(hash table data structure), the coding is simpler. 
     //in array, looking for the last element takes loger than the first one.
   )
+
+  export const selectIsCollectionFetching = createSelector(
+    [selectShop],
+    shop => shop.isfetching
+  )
+
+  export const selectIsCollectionsLoaded = createSelector(
+    [selectShop],
+    shop => !!shop.collections 
+    //!!null, !!0, and !!false are falsy value. But !!anyobject including an empty one is truthy value
+  )

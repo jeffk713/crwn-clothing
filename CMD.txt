@@ -19,3 +19,9 @@ git push heroku master
 
 //for styled-component
 npm add styled-components
+
+//for redux-thunk
+npm add redux-thunk
+
+//for redux-saga
+npm add redux-saga
