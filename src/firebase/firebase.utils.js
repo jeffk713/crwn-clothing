@@ -17,18 +17,14 @@ const myOwnConfig = {
 export const createUserProfileDocument = async (userAuth, additionalData) => { // we are making API request, so it is async
   // userAuth is the object from 'auth' library
   if (!userAuth) return; // we wanna perform this function only if user sign in.
-  
   const userRef = firestore.doc(`users/${userAuth.uid}`); //uid is dynamically gnerated ID string by google when user is authenticated
   //userRef is queryReference Document version from ".doc(`users/${userAuth.uid}`)"
   //'only document reference' object is used with "CRUD" method (creat= .set(), retrieve= .get(), update= .update(), delete= .delete())
   //queryReference does not have actual data, but have details like 'path' 'id' etc
   const collectionRef = firestore.collection('users');
   // to get query reference or collection reference object
-
-
   const snapShot = await userRef.get(); // async 
   //snapShot object is from perfoming .get() method. this snapShot is document snapShot since .get() is performed with documentRef.
-  
   const collectionSnapshot = await collectionRef.get()
   //collection snapshot contains document snapshot 
   console.log({ collection: collectionSnapshot.docs.map(doc => doc.data()) });
@@ -84,17 +80,26 @@ export const convertCollectionsSnapshotToMap = (collections) => {
   }, {})
 }
 
+export const getCurrentUser = () => {
+  return new Promise((resolve, reject)=> {
+    const unsubscribe = auth.onAuthStateChanged(userAuth => {
+      unsubscribe();
+      resolve(userAuth);
+    }, reject)
+  })
+}
+
 firebase.initializeApp(myOwnConfig);
 
 export const auth = firebase.auth();
 
 export const firestore = firebase.firestore();
 
-const provider = new firebase.auth.GoogleAuthProvider();
+export const googleProvider = new firebase.auth.GoogleAuthProvider();
 // this gives access to 'GoogleAuthProvider' from 'auth' library
-provider.setCustomParameters({ prompt: 'select_account' });
+googleProvider.setCustomParameters({ prompt: 'select_account' });
 //we wanna trigger google pop-up when we use the google provider
-export const signInWithGoogle = () => auth.signInWithPopup(provider); 
+export const signInWithGoogle = () => auth.signInWithPopup(googleProvider); 
 // 'signInWithPopup' takes many types of pop-ups, this selects only google one. this function creates pop-up when google-logging in.
 //after this, go to firebase console and enable google option under authentication/sign-in method
 

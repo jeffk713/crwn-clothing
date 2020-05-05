@@ -10,11 +10,8 @@ import CheckoutPage from './pages/checkout/checkout.component';
 
 import Header from './components/header/header.component';
 
-import { auth, createUserProfileDocument, addCollectionAndDocuments } from './firebase/firebase.utils';
-
-import { setCurrentUser } from './redux/user/user.action';
 import { selectCurrentUser } from './redux/user/user.selectors';
-import { selectCollectionsForPreview } from './redux/shop/shop.selectors';
+import { checkUserSession } from './redux/user/user.actions'
 
 import './App.css';
 
@@ -24,33 +21,33 @@ class App extends React.Component {
   unsubscribeFromAuth = null // new method for closing subscription, default is null
 
   componentDidMount() {
+    const { checkUserSession } = this.props
+    checkUserSession();
+    // this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => { 
+    //   // this is an open subscription
+    //   //whenever any changes occur on firebase related to this application, firebase sends massage that auth state changed whether user state updated; signing in/out etc. Then it will give us user info, so we dont have to manually fetch everytime.
+    //   // because it is an open subscription, we have to close subscription when application unmounted for no memory leak
+    //   //Lec 85
+    //   if (userAuth) { //if user signs in, state gets changed
+    //     const userRef = await createUserProfileDocument(userAuth)
 
-    const { setCurrentUser } = this.props; //this.props is 'mapDispatchToProps'
+    //     userRef.onSnapshot(snapShot => {  
+    //       setCurrentUser({
+    //           id: snapShot.id,
+    //           ...snapShot.data() //.data() to be performed for actual data from document snapshot.
+    //         })
+    //       });
 
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => { 
-      // this is an open subscription
-      //whenever any changes occur on firebase related to this application, firebase sends massage that auth state changed whether user state updated; signing in/out etc. Then it will give us user info, so we dont have to manually fetch everytime.
-      // because it is an open subscription, we have to close subscription when application unmounted for no memory leak
-      //Lec 85
-      if (userAuth) { //if user signs in, state gets changed
-        const userRef = await createUserProfileDocument(userAuth)
+    //   } else {
+    //     setCurrentUser(userAuth); 
+    //     //meaning, if user signs out(userAuth = null), set 'currentUser' to 'null'
 
-        userRef.onSnapshot(snapShot => {  
-          setCurrentUser({
-              id: snapShot.id,
-              ...snapShot.data() //.data() to be performed for actual data from document snapshot.
-            })
-          });
-
-      } else {
-        setCurrentUser(userAuth); 
-        //meaning, if user signs out(userAuth = null), set 'currentUser' to 'null'
-
-        // addCollectionAndDocuments('collections', collectionsArray.map(({title, items}) => ({title, items}) ));
-        // after updating data, no need.
-      }
+    //     // addCollectionAndDocuments('collections', collectionsArray.map(({title, items}) => ({title, items}) ));
+    //     // firebase until function 
+    //     // after updating data, no need.
+    //   }
  
-    });
+    // });
   }
 
   componentWillUnmount() {
@@ -87,11 +84,7 @@ const mapStateToProps = createStructuredSelector({ // destructuring 'state' into
 });
 
 const mapDispatchToProps = dispatch => ({
-  setCurrentUser: user => dispatch(setCurrentUser(user)) 
-  // dispatch funciton tells redux to dispatch the object passed to all the reducers as action object.
-  // 'setCurrentUser(user)' returns an object
-
-  // same as this; setCurrentUser(user) = 'dispatch(setCurrentUser(user))'
-});
+  checkUserSession: () => dispatch(checkUserSession())
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

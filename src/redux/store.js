@@ -4,9 +4,8 @@ import logger from 'redux-logger';
 // import thunk from 'redux-thunk'; we dont need 'thunk' since using 'saga'
 import createSagaMiddleware from 'redux-saga';
 
-import { fetchCollectionsStart } from './shop/shop.sagas';
-
 import rootReducer from './root-reducer';
+import rootSaga from './root-saga';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -19,7 +18,7 @@ if (process.env.NODE_ENV === 'development') {
 
 export const store = createStore(rootReducer, applyMiddleware(...middlewares));
 
-sagaMiddleware.run(fetchCollectionsStart);
+sagaMiddleware.run(rootSaga);
 
 export const persistor = persistStore(store); //persistor is persist version of store
 
