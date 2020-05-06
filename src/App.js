@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
@@ -16,13 +16,19 @@ import { checkUserSession } from './redux/user/user.actions'
 import './App.css';
 
 // firevase auth needs to store user information in state, 'App' component have been converted to class component.
-class App extends React.Component {
-  
-  unsubscribeFromAuth = null // new method for closing subscription, default is null
-
-  componentDidMount() {
-    const { checkUserSession } = this.props
+const App = ({ checkUserSession, currentUser }) => {
+  useEffect(()=> {
     checkUserSession();
+  }, [checkUserSession]); 
+  //if 'checkUserSession' is a property of the parent component, we will not use checkUserSession in the array.
+  //lec 199
+
+
+
+  //unsubscribeFromAuth = null // new method for closing subscription, default is null
+
+  // componentDidMount() {
+  //   checkUserSession();
     // this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => { 
     //   // this is an open subscription
     //   //whenever any changes occur on firebase related to this application, firebase sends massage that auth state changed whether user state updated; signing in/out etc. Then it will give us user info, so we dont have to manually fetch everytime.
@@ -48,16 +54,11 @@ class App extends React.Component {
     //   }
  
     // });
-  }
+  //}
 
-  componentWillUnmount() {
-    this.unsubscribeFromAuth();  // so when this application unmounted, it closes subscription.
-  }
-
-
-
-  render () {
-
+  // componentWillUnmount() {
+  //   this.unsubscribeFromAuth();  // so when this application unmounted, it closes subscription.
+  // }
     return (
       <div>
         <Header /> {/* Header has sign in and out button, so it needs state of currentUser to show sign in or out button aocordingly */}
@@ -65,7 +66,7 @@ class App extends React.Component {
           <Route exact path='/' component={HomePage} />
           <Route path='/shop' component={ShopPage} />
           <Route exact path='/checkout' component={CheckoutPage} />
-          <Route exact path='/signin' render={()=> this.props.currentUser? (<Redirect to='/'/>): (<SignInAndSignUpPage/>)} />
+          <Route exact path='/signin' render={()=> currentUser? (<Redirect to='/'/>): (<SignInAndSignUpPage/>)} />
         </Switch>
       </div>
     ); 
@@ -76,7 +77,6 @@ class App extends React.Component {
   // --> when the path is the base url, render {HomePage}
   // without 'exact' even tho 'path' is partially true, it will render according 'component' 
   //<Switch> gives us more control over renderingn page, it only renders only one component when it matches. no rendering multiple components. Lec 66. at 6:00
-}
 
 const mapStateToProps = createStructuredSelector({ // destructuring 'state' into '{user}'
   currentUser: selectCurrentUser,
