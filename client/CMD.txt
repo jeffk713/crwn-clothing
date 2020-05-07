@@ -1,0 +1,32 @@
+
+// for redux
+npm add redux redux-logger react-redux 
+
+// for reselect
+npm add reselect 
+
+// for redux-persist
+npm add redux-persist 
+
+// for stripe
+npm add react-stripe-checkout 
+
+//for heroku
+npm install -g heroku
+heroku login
+heroku create crwn--web--udemy --buildpack https://github.com/mars/create-react-app-buildpack.git
+git push heroku master
+
+//for styled-component
+npm add styled-components
+
+//for redux-thunk
+npm add redux-thunk
+
+//for redux-saga
+npm add redux-saga
+
+
+// for axios
+yarn add axios
+npm install axios

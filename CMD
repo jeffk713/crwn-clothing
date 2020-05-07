@@ -1,0 +1,9 @@
+// for package.json
+touch package.json
+
+// for server.js
+touch server.js
+
+// for nodemon
+npm i -g nodemon
+
